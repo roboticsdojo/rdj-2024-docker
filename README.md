@@ -59,3 +59,32 @@ This script (`start-rdj-2024.sh`) simplifies the process of pulling, creating, a
   Log out and log back in for the changes to take effect.
 - For X11 display issues on PC, try running `xhost +local:docker` before running the script.
 - If the script fails to detect your display server correctly, you can manually modify the script to use the correct method (X11 or Wayland).
+
+## Submitting Issues
+
+If you encounter any problems or have suggestions for improvements, we encourage you to submit an issue. Here's how to do it effectively:
+
+1. **Go to the Issues page**: Navigate to the [Issues page](https://github.com/roboticsdojo/rdj-2024-docker/issues) of the project's GitHub repository.
+
+2. **Click "New Issue"**: Click on the green "`New Issue`" button.
+
+3. **Choose the issue type**: Select the appropriate issue template if provided (e.g., Bug Report, Feature Request).
+
+4. **Fill in the template**: Provide as much detail as possible. A good issue report includes:
+   - A clear and descriptive title
+   - A detailed description of the problem or suggestion
+   - Steps to reproduce the issue (for bugs)
+   - What you expected to happen
+   - What actually happened
+   - Your system information (OS, Docker version, hardware architecture)
+   - Any relevant logs, error messages, or screenshots
+
+5. **Code formatting**: Use markdown code blocks for any code snippets or log outputs:
+
+6. **Submit the issue**: Once you've filled out the template, click "`Submit new issue`".
+
+7. **Follow up**: Keep an eye on your issue for any follow-up questions or requests for additional information from the maintainers.
+
+Remember, the more information you provide, the easier it will be for the maintainers to understand and address your issue. Be patient and respectful – maintainers are often volunteers working in their spare time.
+
+For more detailed guidelines on contributing, please refer to our [Contribution Guidelines](CONTRIBUTION.md).
