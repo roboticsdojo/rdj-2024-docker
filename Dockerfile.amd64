@@ -36,7 +36,11 @@ RUN apt install -y \
 # Linux tools and dependencies
 RUN apt install -y \
     nano \
-    gedit
+    gedit \
+    x11-apps \
+    mesa-utils \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri
 
 
 # Set Environment Variables
@@ -53,9 +57,15 @@ RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 RUN sed -i 's/robot_model_type: "differential"/robot_model_type: "nav2_amcl::DifferentialMotionModel"/g' /opt/ros/humble/share/turtlebot3_navigation2/param/waffle.yaml
 
 
-# Set Working Directory
-WORKDIR /home/demo_ws
+# Create a non-root user
+RUN useradd -m dockeruser
+RUN usermod -aG sudo dockeruser
+
+
+# Set up the environment for the non-root user
+USER dockeruser
+WORKDIR /home/dockeruser
 
 
 # Default command
-CMD /bin/bash -c "echo '🤖 You have successfully pulled and run the ROS2 Docker image for ARM! 🤖\n\n+-+-+-+-\n\n🤖 From the Robotics Dojo Community 🤖' && /bin/bash"
+CMD /bin/bash -c "echo '🤖 You have successfully pulled and run the ROS2 Docker image for ARM! 🤖 From the Robotics Dojo Community ❤️' && /bin/bash"

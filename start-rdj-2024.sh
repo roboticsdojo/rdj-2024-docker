@@ -4,13 +4,13 @@ CONTAINER_NAME="rdj-2024"
 
 # Function to check if container exists
 container_exists() {
-    sudo docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"
+    docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"
 }
 
 # Function to start existing container
 start_container() {
     echo "Starting existing container ${CONTAINER_NAME}"
-    sudo docker start -ia ${CONTAINER_NAME}
+    docker start -ia ${CONTAINER_NAME}
 }
 
 
@@ -24,7 +24,7 @@ if grep -q "Raspberry Pi" /proc/cpuinfo; then
         touch /tmp/.docker.xauth
         xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f /tmp/.docker.xauth nmerge -
 
-        sudo docker run -it --name ${CONTAINER_NAME} --net=host --privileged \
+        docker run -it --name ${CONTAINER_NAME} --net=host --privileged \
             --volume /tmp/.docker.xauth:/tmp/.docker.xauth \
             --volume /tmp/.X11-unix:/tmp/.X11-unix \
             --env DISPLAY=$DISPLAY \
@@ -39,7 +39,7 @@ else
         if [ -n "$WAYLAND_DISPLAY" ]; then
             echo "Wayland detected, using Wayland socket"
 
-            sudo docker run -it --name ${CONTAINER_NAME} --net=host --privileged \
+            docker run -it --name ${CONTAINER_NAME} --net=host --privileged \
                 --volume $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/tmp/$WAYLAND_DISPLAY \
                 --env WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
                 codewithlennylen/rdj-2024:latest
@@ -50,8 +50,9 @@ else
             XAUTH=/tmp/.docker.xauth
             touch $XAUTH
             xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+            xhost +local:docker
 
-            sudo docker run -it --name ${CONTAINER_NAME} --net=host --privileged \
+            docker run -it --name ${CONTAINER_NAME} --net=host --privileged \
                 --volume $XSOCK:$XSOCK \
                 --volume $XAUTH:$XAUTH \
                 --env DISPLAY=$DISPLAY \
