@@ -1,0 +1,64 @@
+# Starting from official ROS Repository
+FROM ros:humble
+
+
+# Update system
+RUN apt update && apt upgrade -y
+
+
+# ROS2 tools and dependencies
+RUN apt install -y \
+    ros-humble-demo-nodes-cpp \
+    ros-humble-demo-nodes-py \
+    ros-humble-rviz2 \
+    ros-humble-rqt \
+    ros-humble-joint-state-publisher-gui \
+    ros-humble-ros-gz
+
+  
+# ROS2 build tools and dependencies
+RUN apt install -y \
+    python3-colcon-common-extensions \ 
+    ros-humble-rmw-cyclonedds-cpp
+
+
+# Navigation Stack
+RUN apt install -y \
+    ros-humble-navigation2 \
+    ros-humble-nav2-bringup
+
+# Turtlebot3 (for navigation demo)
+RUN apt install -y \
+    ros-humble-turtlebot3*
+
+
+# Linux tools and dependencies
+RUN apt install -y \
+    nano \
+    gedit \
+    x11-apps \
+    mesa-utils \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri
+
+
+# Set Environment Variables
+RUN echo "export TURTLEBOT3_MODEL=waffle" >> ~/.bashrc && \
+    echo "export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models" >> ~/.bashrc && \
+    echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
+
+
+# Add ROS2 source to bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+
+
+# Modify waffle.yaml file (Cyclone DDS Recommended for Nav2)
+RUN sed -i 's/robot_model_type: "differential"/robot_model_type: "nav2_amcl::DifferentialMotionModel"/g' /opt/ros/humble/share/turtlebot3_navigation2/param/waffle.yaml
+
+
+# Set Working Directory
+WORKDIR /home/demo_ws
+
+
+# Default command
+CMD /bin/bash -c "echo '🤖 You have successfully pulled and run the ROS2 Docker image for ARM! 🤖\n\n+-+-+-+-\n\n🤖 From the Robotics Dojo Community 🤖' && /bin/bash"
