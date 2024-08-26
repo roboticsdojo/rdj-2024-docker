@@ -1,100 +1,44 @@
 
-The `codewithlennylen/rdj-2024:pc-latest` Docker image is designed for roboticists and is based on the Robotics Dojo Competition 2024. It provides a robust and ready-to-use environment. 
 
-Features include:
-- **ROS2 Framework**: Pre-installed to facilitate the development of robot applications.
-- **Navigation Stack**: Pre-configured for seamless integration and use.
-- **Continuous Testing and Updates**: Ensuring reliability and the latest features.
+# rdj-2024 Robotics Development Environment
 
+## Introduction
 
----
-## Instructions to Pull and Run the Docker Image
+The rdj-2024 Docker image is a comprehensive, ready-to-use container for robotics enthusiasts, researchers, and developers working with ROS2 (Robot Operating System 2) and the Navigation Stack. 
+This image was built to provide a consistent, easily deployable environment for ROS2 development across different hardware platforms, specifically targeting Raspberry Pi (ARM64) and PC (AMD64) architectures.
 
-### Pull the Docker Image
+## Why This Image Was Built
 
-To pull the Docker image, use the following command:
-```sh
-docker pull codewithlennylen/rdj-2024:pc-latest
-```
+1. **Consistency**: Ensures a uniform development environment across different machines and operating systems.
+2. **Ease of Use**: Eliminates the complexities of ROS2 installation and setup, allowing users to start developing immediately.
+3. **Cross-Platform Compatibility**: Supports both ARM64 (Raspberry Pi) and AMD64 (PC) architectures with a single image pull command.
+4. **Educational Purpose**: Provides a complete toolkit for learning and experimenting with ROS2 and robotics concepts.
 
-### Enable GUI
+## What It Contains
 
-To allow the docker container to share graphical applications with your PC, you need to run the following command:
-```sh
-sudo xhost +local:docker
-```
+This Docker image includes:
 
+- ROS2 Humble distribution
+- Essential ROS2 tools and dependencies:
+  - demo_nodes_cpp and demo_nodes_py
+  - rviz2
+  - rqt
+  - joint_state_publisher_gui
+  - ros-gz (Gazebo integration)
+- ROS2 build tools:
+  - colcon
+  - rmw_cyclonedds_cpp
+- Navigation Stack:
+  - navigation2
+  - nav2_bringup
+- Turtlebot3 packages for navigation demos
+- Linux tools: nano, gedit
+- X11 apps and Mesa utilities for GUI support
+- Pre-configured environment variables for ROS2 and Gazebo
 
+## Installation Instructions
 
-### Run the Docker Image
-
-To run the Docker image, use the following command:
-```sh
-docker run --name rdj-2024 -it --privileged --net=host --env DISPLAY=$DISPLAY codewithlennylen/rdj-2024:pc-latest
-```
-
-Breakdown of the command:
-- **`docker run --name rdj-2024`**: Starts a container called `rdj-2024` with the `codewithlennylen/rdj-2024:pc-latest` image that you've downloaded.
-- **`-it`**: Attaches the current terminal session to the running docker container
-- **`--privileged`**: allows the docker container to access your computer hardware (useful for when you have sensors attached e.g. LiDAR)
-- **`--net=host`**: allows the docker container to use your PC's network interface (useful for discovering ROS2 nodes in your network)
-- **`--env DISPLAY=$DISPLAY`**: forwards the display of the docker container to your PC, thus allowing you to view graphical applications such as **`rqt_graph`**
-
-### Working inside the container
-
-The command above starts a docker container and attaches the current terminal session to the container. 
-You might want to open up additional sessions to, for example, run multiple ROS2 nodes.
-
-Open a new terminal session and run the command below to attach the terminal to the running container.
-
-```sh
-docker exec -it rdj-2024 bash
-```
----
-## Running ROS2 Commands
-
-ROS requires that you '***source***' it before running commands such as `ros2 run ...`
-At the start of each terminal session (inside the docker container), run the following command:
-
-```sh
-source /opt/ros/humble/setup.bash
-```
-
-Start RViz
-```sh
-rviz2
-```
-
----
-## Cleanup i.e. Removing a container and/or deleting an Image
+You can find the latest version of this image's Documentation & installation instructions on GitHub:
+[roboticsdojo/rdj-2024-docker](https://github.com/roboticsdojo/rdj-2024-docker)
 
 
-The command below can be used at any time to show a list of all your containers and whether or not they are running:
-```sh
-docker ps -a
-```
-
-In a different terminal, type the following command to shut down the container.
-```sh
-docker stop rdj-2024
-```
-
-Next, remove the container:
-```sh
-docker rm rdj-2024
-```
-
-### Deleting the Image [WARNING]
-
-You can also remove the image but this requires you to pull the image again in order to run another container.
-
-
-The command below can be used at any time to show a list of all your images:
-```sh
-docker images
-```
-
-Remove the image:
-```sh
-docker rmi codewithlennylen/rdj-2024:pc-latest
-```
