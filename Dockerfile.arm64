@@ -56,13 +56,8 @@ RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 RUN sed -i 's/robot_model_type: "differential"/robot_model_type: "nav2_amcl::DifferentialMotionModel"/g' /opt/ros/humble/share/turtlebot3_navigation2/param/waffle.yaml
 
 
-# Create a non-root user
-RUN useradd -m dockeruser
-RUN usermod -aG sudo dockeruser
-
-# Set up the environment for the non-root user
-USER dockeruser
-WORKDIR /home/dockeruser
+# Set up the environment
+WORKDIR /home/rdj-2024
 
 
 # Default command
