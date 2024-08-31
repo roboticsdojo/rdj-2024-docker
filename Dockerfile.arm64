@@ -42,6 +42,14 @@ RUN apt install -y \
     libgl1-mesa-dri
 
 
+RUN apt-get update && \
+    apt-get install -y xfce4 xfce4-goodies tightvncserver
+
+# Set up VNC server
+RUN mkdir -p ~/.vnc && \
+    echo "rdj-2024" | vncpasswd -f > ~/.vnc/passwd && \
+    chmod 600 ~/.vnc/passwd    
+
 # Set Environment Variables
 RUN echo "export TURTLEBOT3_MODEL=waffle" >> ~/.bashrc && \
     echo "export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models" >> ~/.bashrc && \
@@ -60,5 +68,12 @@ RUN sed -i 's/robot_model_type: "differential"/robot_model_type: "nav2_amcl::Dif
 WORKDIR /home/rdj-2024
 
 
-# Default command
-CMD /bin/bash -c "echo '🤖 You have successfully pulled and run the ROS2 Docker image for ARM! 🤖 From the Robotics Dojo Community ❤️' && /bin/bash"
+# Startup script to display welcome message and start the VNC server
+RUN echo '#!/bin/bash' > /start-vnc.sh && \
+    echo 'echo "🤖 You have successfully pulled and run the ROS2 Docker image for ARM! 🤖 From the Robotics Dojo Community ❤️"' >> /start-vnc.sh && \
+    echo 'vncserver -geometry 1280x800' >> /start-vnc.sh && \
+    chmod +x /start-vnc.sh
+
+
+# Default command runs the startup script
+CMD ["/start-vnc.sh"]
