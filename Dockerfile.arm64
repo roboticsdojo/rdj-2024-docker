@@ -78,10 +78,14 @@ ENV DISPLAY=:1
 # Startup script to display welcome message and start the VNC server
 RUN echo '#!/bin/bash' > /start-vnc.sh && \
     echo 'xauth generate :1 . trusted' >> /start-vnc.sh && \
-    echo 'echo "🤖 You have successfully pulled and run the ROS2 Docker image for ARM! 🤖 From the Robotics Dojo Community ❤️"' >> /start-vnc.sh && \
+    echo 'echo "🤖 You have successfully pulled and run the ROS2 Docker image for ARM!"' >> /start-vnc.sh && \
     echo 'vncserver -geometry 1280x800' >> /start-vnc.sh && \
     chmod +x /start-vnc.sh
 
 
-# Default command runs the startup script
-CMD ["/start-vnc.sh"]
+# uns the startup script
+ENTRYPOINT ["/start-vnc.sh"]
+
+
+# Attach a shell to the container
+CMD ["/bin/bash"]
