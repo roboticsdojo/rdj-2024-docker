@@ -1,0 +1,115 @@
+# Starting from official ROS Repository
+FROM ubuntu:22.04
+
+
+# Update system
+RUN apt update && apt upgrade -y
+
+
+# Install ROS2 Prerequisites
+RUN apt install -y \
+    locales && \
+    locale-gen en_US en_US.UTF-8 && \
+    update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 && \
+    export LANG=en_US.UTF-8
+
+
+RUN apt install -y \
+    software-properties-common && \
+    add-apt-repository universe
+
+
+RUN apt update && \
+    apt install -y \
+    curl && \
+    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+
+# ROS2 Installation
+RUN apt update && \
+    apt upgrade -y && \
+    apt install -y \
+    ros-humble-desktop
+
+  
+# ROS2 build tools and dependencies
+RUN apt install -y \
+    python3-colcon-common-extensions
+    
+
+RUN apt install -y \
+    ros-humble-rmw-cyclonedds-cpp
+
+
+# Navigation Stack
+RUN apt install -y \
+    ros-humble-navigation2 \
+    ros-humble-nav2-bringup
+
+# Turtlebot3 (for navigation demo)
+RUN apt install -y \
+    ros-humble-turtlebot3*
+
+
+# Linux tools and dependencies
+RUN apt install -y \
+    nano \
+    gedit \
+    x11-apps \
+    mesa-utils \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri
+
+
+# Install VNC server and XFCE
+RUN apt-get update && \
+    apt-get install -y xfce4 xfce4-goodies tightvncserver
+
+
+# Set up VNC server
+RUN mkdir -p ~/.vnc && \
+    echo "rdj-2024" | vncpasswd -f > ~/.vnc/passwd && \
+    chmod 600 ~/.vnc/passwd    
+
+
+# Set Environment Variables
+RUN echo "export TURTLEBOT3_MODEL=waffle" >> ~/.bashrc && \
+    echo "export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models" >> ~/.bashrc && \
+    echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
+
+
+# Add ROS2 source to bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+
+
+# Modify waffle.yaml file (Cyclone DDS Recommended for Nav2)
+RUN sed -i 's/robot_model_type: "differential"/robot_model_type: "nav2_amcl::DifferentialMotionModel"/g' /opt/ros/humble/share/turtlebot3_navigation2/param/waffle.yaml
+
+
+# Set up the environment
+WORKDIR /home/rdj-2024
+
+
+# (VNC Config) Set the USER environment variable
+ENV USER=rdj-2024
+
+# Set the DISPLAY environment variable
+# ENV DISPLAY=:1
+
+
+# Startup script to display welcome message and start the VNC server
+RUN echo '#!/bin/bash' > /start-vnc.sh && \
+    # echo 'xauth generate :1 . trusted' >> /start-vnc.sh && \
+    echo 'echo "🤖 You have successfully pulled and run the ROS2 Docker image for ARM! 🤖 From the Robotics Dojo Community ❤️"' >> /start-vnc.sh && \
+    echo 'vncserver -geometry 1280x800' >> /start-vnc.sh && \
+    echo 'tail -f /dev/null' >> /start-vnc.sh && \
+    chmod +x /start-vnc.sh
+
+
+# uns the startup script
+ENTRYPOINT ["/start-vnc.sh"]
+
+
+# Attach a shell to the container
+CMD ["/bin/bash"]
