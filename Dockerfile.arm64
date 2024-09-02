@@ -72,12 +72,12 @@ WORKDIR /home/rdj-2024
 ENV USER=rdj-2024
 
 # Set the DISPLAY environment variable
-ENV DISPLAY=:1
+# ENV DISPLAY=:1
 
 
 # Startup script to display welcome message and start the VNC server
 RUN echo '#!/bin/bash' > /start-vnc.sh && \
-    echo 'xauth generate :1 . trusted' >> /start-vnc.sh && \
+    # echo 'xauth generate :1 . trusted' >> /start-vnc.sh && \
     echo 'echo "🤖 You have successfully pulled and run the ROS2 Docker image for ARM!"' >> /start-vnc.sh && \
     echo 'vncserver -geometry 1280x800' >> /start-vnc.sh && \
     echo 'tail -f /dev/null' >> /start-vnc.sh && \
