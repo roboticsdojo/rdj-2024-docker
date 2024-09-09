@@ -1,6 +1,3 @@
-Active code page: 1252
-Active code page: 1252
-Active code page: 1252
 #!/bin/bash
 
 CONTAINER_NAME="rdj-2024"
