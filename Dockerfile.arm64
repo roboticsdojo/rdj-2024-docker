@@ -42,13 +42,21 @@ RUN apt install -y \
     libgl1-mesa-dri
 
 
+# VNC Server
 RUN apt-get update && \
     apt-get install -y xfce4 xfce4-goodies tightvncserver
+
+
+# Turtlesim (for ROS2 Demo)
+RUN apt-get update && \
+    apt-get install ros-humble-turtlesim
+
 
 # Set up VNC server
 RUN mkdir -p ~/.vnc && \
     echo "rdj-2024" | vncpasswd -f > ~/.vnc/passwd && \
     chmod 600 ~/.vnc/passwd    
+
 
 # Set Environment Variables
 RUN echo "export TURTLEBOT3_MODEL=waffle" >> ~/.bashrc && \
@@ -71,20 +79,22 @@ WORKDIR /home/rdj-2024
 # Set the USER environment variable
 ENV USER=rdj-2024
 
-# Set the DISPLAY environment variable
-# ENV DISPLAY=:1
+
+# Set maintainer
+LABEL maintainer="codewithlennylen254@gmail.com"
 
 
 # Startup script to display welcome message and start the VNC server
 RUN echo '#!/bin/bash' > /start-vnc.sh && \
     # echo 'xauth generate :1 . trusted' >> /start-vnc.sh && \
-    echo 'echo "🤖 You have successfully pulled and run the ROS2 Docker image for ARM!"' >> /start-vnc.sh && \
-    echo 'vncserver -geometry 1280x800' >> /start-vnc.sh && \
+    echo 'echo "🤖 You have successfully pulled and run the ROS2 Docker image for ARM! 🤖 From the Robotics Dojo Community ❤️"' >> /start-vnc.sh && \
+    echo 'vncserver :1' >> /start-vnc.sh && \
+    echo 'echo "😊 VNC Server started. Connect to it via Tight / Tiger VNC Viewer at <raspberry-pi-address:5901> and password=rdj-2024"' >> /start-vnc.sh && \
     echo 'tail -f /dev/null' >> /start-vnc.sh && \
     chmod +x /start-vnc.sh
 
 
-# uns the startup script
+# Runs the startup script
 ENTRYPOINT ["/start-vnc.sh"]
 
 
