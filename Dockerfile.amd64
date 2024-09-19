@@ -43,6 +43,22 @@ RUN apt install -y \
     libgl1-mesa-dri
 
 
+# Turtlesim (for ROS2 Demo)
+RUN apt-get update && \
+    apt-get install -y ros-humble-turtlesim
+
+
+# VNC Server
+RUN apt-get update && \
+    apt-get install -y xfce4 xfce4-goodies tightvncserver
+
+
+# Set up VNC server
+RUN mkdir -p ~/.vnc && \
+    echo "rdj-2024" | vncpasswd -f > ~/.vnc/passwd && \
+    chmod 600 ~/.vnc/passwd    
+
+
 # Set Environment Variables
 RUN echo "export TURTLEBOT3_MODEL=waffle" >> ~/.bashrc && \
     echo "export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models" >> ~/.bashrc && \
@@ -61,5 +77,27 @@ RUN sed -i 's/robot_model_type: "differential"/robot_model_type: "nav2_amcl::Dif
 WORKDIR /home/rdj-2024
 
 
-# Default command
-CMD /bin/bash -c "echo '🤖 You have successfully pulled and run the ROS2 Docker image for PC! 🤖 From the Robotics Dojo Community ❤️' && /bin/bash"
+# Set the USER environment variable
+ENV USER=rdj-2024
+
+
+# Set maintainer
+LABEL maintainer="codewithlennylen254@gmail.com"
+
+
+
+# Startup script to display welcome message and start the VNC server
+RUN echo '#!/bin/bash' > /start-vnc.sh && \
+    echo 'echo "🤖 You have successfully pulled and run the ROS2 Docker image for PC! 🤖 From the Robotics Dojo Community ❤️"' >> /start-vnc.sh && \
+    echo 'vncserver :1' >> /start-vnc.sh && \
+    echo 'echo "😊 VNC Server started. Connect to it via Tight / Tiger VNC Viewer at <localhost:5901> and password=rdj-2024"' >> /start-vnc.sh && \
+    echo 'tail -f /dev/null' >> /start-vnc.sh && \
+    chmod +x /start-vnc.sh
+
+
+# Runs the startup script
+ENTRYPOINT ["/start-vnc.sh"]
+
+
+# Attach a shell to the container
+CMD ["/bin/bash"]
