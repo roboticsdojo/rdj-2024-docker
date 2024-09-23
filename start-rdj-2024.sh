@@ -29,37 +29,35 @@ pull_latest_image
 # Check if the hardware is Raspberry Pi
 if grep -q "Raspberry Pi" /proc/cpuinfo; then
     echo "Running on Raspberry Pi"
-    touch /tmp/.docker.xauth
-    xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f /tmp/.docker.xauth nmerge -
-    docker run -it --name ${CONTAINER_NAME} --privileged \
-        --volume /tmp/.docker.xauth:/tmp/.docker.xauth \
-        --volume /tmp/.X11-unix:/tmp/.X11-unix \
+    # touch /tmp/.docker.xauth
+    # xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f /tmp/.docker.xauth nmerge -
+    docker run -it --name ${CONTAINER_NAME} \
+        --privileged \
+        --network host \
         --env DISPLAY=$DISPLAY \
-        --env XAUTHORITY=/tmp/.docker.xauth \
         ${IMAGE_NAME}
 else
     echo "Running on PC"
     if [ -n "$WAYLAND_DISPLAY" ]; then
         echo "Wayland detected, using Wayland socket"
+        sudo xhost +local:docker
         docker run -it --name ${CONTAINER_NAME} \
-            -v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/tmp/$WAYLAND_DISPLAY \
-            -e WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
-            -e XDG_RUNTIME_DIR=/tmp \
-            ${IMAGE_NAME}
+        --privileged \
+        --network host \
+        --env DISPLAY=$DISPLAY \
+        ${IMAGE_NAME}
     else
         echo "X11 detected, using xauth"
-        XSOCK=/tmp/.X11-unix
-        XAUTH=/tmp/.docker.xauth
-        touch $XAUTH
-        xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
-        xhost +local:docker
+        # XSOCK=/tmp/.X11-unix
+        # XAUTH=/tmp/.docker.xauth
+        # touch $XAUTH
+        # xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+        sudo xhost +local:docker
         docker run -it --name ${CONTAINER_NAME} \
-            -e DISPLAY=$DISPLAY \
-            -v $XSOCK:$XSOCK:ro \
-            -v $XAUTH:$XAUTH \
-            -e XAUTHORITY=$XAUTH \
-            --device /dev/dri \
-            ${IMAGE_NAME}
+        --privileged \
+        --network host \
+        --env DISPLAY=$DISPLAY \
+        ${IMAGE_NAME}
     fi
 fi
 
