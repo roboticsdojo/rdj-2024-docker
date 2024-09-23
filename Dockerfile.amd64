@@ -1,6 +1,8 @@
 # Starting from official ROS Repository
 FROM ros:humble
 
+# Use non-interactive mode for package configuration.
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Update system
 RUN apt update && apt upgrade -y
