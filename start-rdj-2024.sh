@@ -5,7 +5,7 @@ IMAGE_NAME="codewithlennylen/rdj-2024:latest"
 
 # Function to check if container exists
 container_exists() {
-    docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"
+  docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"
 }
 
 # Function to remove existing containers
@@ -16,8 +16,8 @@ remove_existing_containers() {
 
 # Function to pull the latest image
 pull_latest_image() {
-    echo "Pulling the latest image: ${IMAGE_NAME}"
-    docker pull ${IMAGE_NAME}
+  echo "Pulling the latest image: ${IMAGE_NAME}"
+  docker pull ${IMAGE_NAME}
 }
 
 # Remove existing containers
