@@ -1,4 +1,4 @@
-# RDJ-2024 Docker Image
+# RDJ-2024 Docker Image (v2.0.0)
 
 ## Using the Convenience Script
 
@@ -26,29 +26,34 @@ This script (`start-rdj-2024.sh`) simplifies the process of pulling, creating, a
 
 ### What the Script Does
 
-1. Pulls the latest version of the RDJ-2024 Docker image.
-2. Checks if you're running on a Raspberry Pi or a PC.
-3. Checks if a container named `rdj-2024` already exists.
-4. If the container exists, it starts the existing container.
-5. If the container doesn't exist, it creates and runs a new container with the appropriate display forwarding setup (X11 or Wayland).
+1. Removes any existing containers named `rdj-2024` to ensure a fresh start.
+2. Pulls the latest version of the RDJ-2024 Docker image.
+3. Checks if you're running on a Raspberry Pi or a PC.
+4. Creates and runs a new container with the appropriate display forwarding setup (X11 or Wayland).
 
 ### Features
 
 - **Automatic Platform Detection**: Automatically detects whether you're on a Raspberry Pi or PC and uses the appropriate Docker image and settings.
 - **Display Forwarding**: Sets up X11 or Wayland display forwarding, allowing GUI applications to run inside the Docker container and display on the host system.
-- **Persistent Containers**: Creates a named container that persists between runs, allowing you to maintain your work environment.
-- **Latest Image Pull**: Always attempts to pull the latest version of the Docker image before running, ensuring you have the most up-to-date environment.
+- **Fresh Environment**: Always creates a new container, ensuring a clean and up-to-date environment for each session.
+- **Latest Image Pull**: Always pulls the latest version of the Docker image before running, ensuring you have the most up-to-date environment.
+- **VNC Server**: Includes a pre-configured VNC server for remote GUI access.
+
+## New in v2.0.0
+
+- **VNC Server Integration**: Remote GUI access with Xfce4 desktop environment and TightVNC server.
+- **Enhanced Linux Toolkit**: Added essential development tools including nano, gedit, X11 apps, and Mesa utilities.
+- **Updated ROS2 Base**: Latest ROS Humble distribution with improved compatibility and performance.
+- **Navigation Upgrades**: Integrated Navigation2 stack and Turtlebot3 packages.
+- **Gazebo Integration**: Improved support for robotics simulation with ROS-Gazebo packages.
 
 ## Notes
 
 - The script uses the image `codewithlennylen/rdj-2024:latest`. You can view it on Docker Hub by clicking [here.](https://hub.docker.com/r/codewithlennylen/rdj-2024)
 - If you need to use a different image or tag, modify the `IMAGE_NAME` variable at the top of the script.
 - The script creates a container named `rdj-2024`. If you need to use a different name, modify the `CONTAINER_NAME` variable.
-- To use a new version of the image with an existing container, you need to manually remove the old container first:
-  ```bash
-  docker rm rdj-2024
-  ```
-  Then run the script again to create a new container with the updated image.
+- Each time you run the script, it will remove any existing containers with the same name and create a new one. This ensures you always start with a fresh environment.
+- To connect to the VNC server, use a VNC client and connect to `localhost:5901` (password: `rdj-2024`).
 
 ## Troubleshooting
 
@@ -59,6 +64,7 @@ This script (`start-rdj-2024.sh`) simplifies the process of pulling, creating, a
   Log out and log back in for the changes to take effect.
 - For X11 display issues on PC, try running `xhost +local:docker` before running the script.
 - If the script fails to detect your display server correctly, you can manually modify the script to use the correct method (X11 or Wayland).
+- If you experience issues with the VNC server, ensure no other VNC sessions are running on the same port.
 
 ## Submitting Issues
 
@@ -79,7 +85,7 @@ If you encounter any problems or have suggestions for improvements, we encourage
    - Your system information (OS, Docker version, hardware architecture)
    - Any relevant logs, error messages, or screenshots
 
-5. **Code formatting**: Use markdown code blocks for any code snippets or log outputs:
+5. **Code formatting**: Use markdown code blocks for any code snippets or log outputs.
 
 6. **Submit the issue**: Once you've filled out the template, click "`Submit new issue`".
 
