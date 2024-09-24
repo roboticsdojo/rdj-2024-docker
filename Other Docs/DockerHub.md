@@ -56,10 +56,10 @@ You can find the latest version of this image's documentation & installation ins
 To pull the latest image:
 
 ```
-docker pull [your-docker-registry]/ros2-robotics-dojo:2.0.0
+docker pull codewithlennylen/rdj-2024:latest
 ```
 
-After running the container, you can connect to the VNC server using a VNC client at `<container-ip>:5901` with the password `rdj-2024`.
+After running the container, you can connect to the VNC server using a VNC client at `<host-ip>:5901` with the password `rdj-2024`.
 
 ## Support
 
